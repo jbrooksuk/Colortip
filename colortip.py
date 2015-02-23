@@ -62,7 +62,7 @@ class ColortipEventCommand(sublime_plugin.EventListener):
 
         for scope in scopes:
             if (scope+'') in scope_name:
-                if '#' in view.substr(view.word(view.sel()[0])):
+                if (scope == 'constant.other.color.rgb-value.css' and '#' in view.substr(view.word(view.sel()[0]))) or scope == 'meta.property-value.css':
                     view.show_popup(''.join(self.colors), sublime.COOPERATE_WITH_AUTO_COMPLETE, location=-1, max_width=500, on_navigate=ColortipTextCommand.handle_selected_color)
 
     def cycle(self, steps):
