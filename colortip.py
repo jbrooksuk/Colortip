@@ -29,7 +29,7 @@ wheel = [
     (229,0,102),
 ]
 
-class ColortipCommand(sublime_plugin.EventListener):
+class ColortipEventCommand(sublime_plugin.EventListener):
     colors = None
 
     def on_activate(self, view):
@@ -61,7 +61,7 @@ class ColortipCommand(sublime_plugin.EventListener):
         for scope in scopes:
             if (scope+'') in scope_name:
                 if '#' in view.substr(view.word(view.sel()[0])):
-                    view.show_popup(''.join(self.colors), location=-1, max_width=600, on_navigate=DisplayColortipCommand.handle_selected_color)
+                    view.show_popup(''.join(self.colors), sublime.COOPERATE_WITH_AUTO_COMPLETE, location=-1, max_width=500, on_navigate=ColortipTextCommand.handle_selected_color)
 
     def cycle(self, steps):
         for n in range(len(wheel)):
@@ -83,10 +83,11 @@ class ColortipCommand(sublime_plugin.EventListener):
 
         for rgb in self.cycle(analogicSteps):
             hex_code = '#%02x%02x%02x' % rgb
-            colors.append('<div style="display:inline-block; background-color:{0};"><a href="{0}" style="color:{0}; float: left; width: 20px; height: 20px; display: block;">HIYA</a></div>'.format(hex_code))
+            colors.append('<span style="background-color: {0}"><a href="{0}" style="color:{0}; width: 20px; height: 20px; display: inline-block;">██</a></span>'.format(hex_code))
 
         return colors
 
+class ColortipTextCommand(sublime_plugin.TextCommand):
     def handle_selected_color(self, color):
         self.view.run_command("insert", { "characters": color })
         self.view.hide_popup()
