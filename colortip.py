@@ -1,4 +1,5 @@
 import sublime_plugin, sublime
+import re
 from time import time
 
 wheel = [
@@ -29,6 +30,8 @@ wheel = [
 ]
 
 class ColortipCommand(sublime_plugin.EventListener):
+    colors = None
+
     def on_activate(self, view):
         sublime.set_timeout(lambda:self.run(view, 'activated'), 0)
 
@@ -45,12 +48,18 @@ class ColortipCommand(sublime_plugin.EventListener):
         if len(view.sel()) > 1:
             return
 
-        for region in view.sel():
-            region_row, region_col = view.rowcol(region.begin())
+        scopes = [
+            "constant.other.color.rgb-value.css",
+        ]
 
-            colors = self.generate_colors()
+        if not self.colors:
+            self.colors = self.generate_colors()
 
-            view.show_popup(''.join(colors), location=-1, max_width=600, on_navigate=DisplayColortipCommand.handle_selected_color)
+        scope_name = view.scope_name(view.sel()[0].b)
+
+        for scope in scopes:
+            if (scope+'') in scope_name:
+                view.show_popup(''.join(self.colors), location=-1, max_width=600, on_navigate=DisplayColortipCommand.handle_selected_color)
 
     def cycle(self, steps):
         for n in range(len(wheel)):
