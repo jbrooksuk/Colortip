@@ -50,6 +50,7 @@ class ColortipCommand(sublime_plugin.EventListener):
 
         scopes = [
             "constant.other.color.rgb-value.css",
+            "meta.property-value.css"
         ]
 
         if not self.colors:
@@ -59,7 +60,8 @@ class ColortipCommand(sublime_plugin.EventListener):
 
         for scope in scopes:
             if (scope+'') in scope_name:
-                view.show_popup(''.join(self.colors), location=-1, max_width=600, on_navigate=DisplayColortipCommand.handle_selected_color)
+                if '#' in view.substr(view.word(view.sel()[0])):
+                    view.show_popup(''.join(self.colors), location=-1, max_width=600, on_navigate=DisplayColortipCommand.handle_selected_color)
 
     def cycle(self, steps):
         for n in range(len(wheel)):
