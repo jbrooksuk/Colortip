@@ -47,6 +47,8 @@ class ColortipEventCommand(sublime_plugin.EventListener):
         # If we have multiple selections, don't show anything.
         if len(view.sel()) > 1:
             return
+        else:
+            view.hide_popup();
 
         scopes = [
             "constant.other.color.rgb-value.css",
@@ -79,11 +81,11 @@ class ColortipEventCommand(sublime_plugin.EventListener):
             analogicSteps.append((offset + 2) % 24)
             analogicSteps.append((offset + 4) % 24)
 
-        colors.append('<style>body { margin:0; }</style>')
+        colors.append('<style>body { margin:0; padding: 0; }</style>')
 
         for rgb in self.cycle(analogicSteps):
             hex_code = '#%02x%02x%02x' % rgb
-            colors.append('<span style="background-color: {0}"><a href="{0}" style="color:{0}; width: 20px; height: 20px; display: inline-block;">██</a></span>'.format(hex_code))
+            colors.append('<span style="background-color: {0}; padding: 0; margin: 0;"><a href="{0}" style="color:{0}; width: 20px; height: 20px;">██</a></span>'.format(hex_code))
 
         return colors
 
