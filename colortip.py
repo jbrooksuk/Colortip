@@ -63,7 +63,7 @@ class ColortipEventCommand(sublime_plugin.EventListener):
         for scope in scopes:
             if (scope+'') in scope_name:
                 if (scope == 'constant.other.color.rgb-value.css' and '#' in view.substr(view.word(view.sel()[0]))) or scope == 'meta.property-value.css':
-                    view.show_popup(''.join(self.colors), sublime.COOPERATE_WITH_AUTO_COMPLETE, location=-1, max_width=500, on_navigate=ColortipTextCommand.handle_selected_color)
+                    view.show_popup(''.join(self.colors), sublime.COOPERATE_WITH_AUTO_COMPLETE, location=-1, max_width=500, on_navigate=lambda color, view=view: handle_selected_color(view, color))
 
     def cycle(self, steps):
         for n in range(len(wheel)):
@@ -89,7 +89,6 @@ class ColortipEventCommand(sublime_plugin.EventListener):
 
         return colors
 
-class ColortipTextCommand(sublime_plugin.TextCommand):
-    def handle_selected_color(self, color):
-        self.view.run_command("insert", { "characters": color })
-        self.view.hide_popup()
+def handle_selected_color(view, color):
+    view.run_command("insert", { "characters": color })
+    view.hide_popup()
